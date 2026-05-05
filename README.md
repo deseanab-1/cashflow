@@ -1,6 +1,6 @@
 # Personal Finance MVP
 
-Goal: a fast-to-build budgeting-focused personal finance app (manual transactions + monthly category budgets).
+A budgeting-focused personal finance app (manual transactions + monthly category budgets).
 
 ## Stack
 - Web: React + TypeScript + Vite
