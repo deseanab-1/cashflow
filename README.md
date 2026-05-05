@@ -1,4 +1,4 @@
-# Personal Finance MVP
+# Cashflow
 
 A budgeting-focused personal finance app (manual transactions + monthly category budgets).
 
