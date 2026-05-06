@@ -8,77 +8,6 @@ const prisma = new PrismaClient();
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const REFRESH_COOKIE_NAME = "refreshToken";
 
-function accessTokenTtlSeconds(): number {
-  const n = Number(process.env.ACCESS_TOKEN_TTL_SECONDS ?? 900);
-  return Number.isFinite(n) && n > 0 ? n : 900;
-}
-
-function refreshTokenTtlDays(): number {
-  const n = Number(process.env.REFRESH_TOKEN_TTL_DAYS ?? 30);
-  return Number.isFinite(n) && n > 0 ? n : 30;
-}
-
-function signAccessToken(user: { id: string; email: string }) {
-  const jwtSecret = process.env.JWT_ACCESS_SECRET;
-  if (!jwtSecret) throw new Error("JWT_ACCESS_SECRET is not set");
-
-  return jwt.sign(
-    { sub: user.id, email: user.email },
-    jwtSecret,
-    {
-      expiresIn: accessTokenTtlSeconds(),
-      issuer: "cashflow-api",
-      audience: "cashflow-web",
-    },
-  );
-}
-
-function signRefreshToken(userId: string, jti: string) {
-  const secret = process.env.JWT_REFRESH_SECRET;
-  if (!secret) throw new Error("JWT_REFRESH_SECRET is not set");
-
-  return jwt.sign(
-    { sub: userId, jti, typ: "refresh" },
-    secret,
-    {
-      expiresIn: `${refreshTokenTtlDays()}d`,
-      issuer: "cashflow-api",
-      audience: "cashflow-web",
-    },
-  );
-}
-
-function cookieBaseOptions() {
-  const secure = process.env.NODE_ENV === "production";
-  return {
-    httpOnly: true,
-    secure,
-    sameSite: secure ? ("none" as const) : ("lax" as const),
-    path: "/",
-  };
-}
-
-function setRefreshCookie(res: Parameters<RequestHandler>[1], refreshToken: string) {
-  const maxAge = refreshTokenTtlDays() * 24 * 60 * 60 * 1000;
-  res.cookie(REFRESH_COOKIE_NAME, refreshToken, {
-    ...cookieBaseOptions(),
-    maxAge,
-  });
-}
-
-function clearRefreshCookie(res: Parameters<RequestHandler>[1]) {
-  res.clearCookie(REFRESH_COOKIE_NAME, cookieBaseOptions());
-}
-
-function readRefreshTokenFromRequest(req: Parameters<RequestHandler>[0]): string | undefined {
-  if (typeof req.cookies?.[REFRESH_COOKIE_NAME] === "string") {
-    return req.cookies[REFRESH_COOKIE_NAME];
-  }
-  if (typeof req.body?.refreshToken === "string") {
-    return req.body.refreshToken;
-  }
-  return undefined;
-}
 
 export const register: RequestHandler = async (req, res) => {
   try {
@@ -236,6 +165,78 @@ export const logout: RequestHandler = async (req, res) => {
     return res.status(500).json({ message: "Logout failed" });
   }
 };
+
+function accessTokenTtlSeconds(): number {
+  const n = Number(process.env.ACCESS_TOKEN_TTL_SECONDS ?? 900);
+  return Number.isFinite(n) && n > 0 ? n : 900;
+}
+
+function refreshTokenTtlDays(): number {
+  const n = Number(process.env.REFRESH_TOKEN_TTL_DAYS ?? 30);
+  return Number.isFinite(n) && n > 0 ? n : 30;
+}
+
+function signAccessToken(user: { id: string; email: string }) {
+  const jwtSecret = process.env.JWT_ACCESS_SECRET;
+  if (!jwtSecret) throw new Error("JWT_ACCESS_SECRET is not set");
+
+  return jwt.sign(
+    { sub: user.id, email: user.email },
+    jwtSecret,
+    {
+      expiresIn: accessTokenTtlSeconds(),
+      issuer: "cashflow-api",
+      audience: "cashflow-web",
+    },
+  );
+}
+
+function signRefreshToken(userId: string, jti: string) {
+  const secret = process.env.JWT_REFRESH_SECRET;
+  if (!secret) throw new Error("JWT_REFRESH_SECRET is not set");
+
+  return jwt.sign(
+    { sub: userId, jti, typ: "refresh" },
+    secret,
+    {
+      expiresIn: `${refreshTokenTtlDays()}d`,
+      issuer: "cashflow-api",
+      audience: "cashflow-web",
+    },
+  );
+}
+
+function cookieBaseOptions() {
+  const secure = process.env.NODE_ENV === "production";
+  return {
+    httpOnly: true,
+    secure,
+    sameSite: secure ? ("none" as const) : ("lax" as const),
+    path: "/",
+  };
+}
+
+function setRefreshCookie(res: Parameters<RequestHandler>[1], refreshToken: string) {
+  const maxAge = refreshTokenTtlDays() * 24 * 60 * 60 * 1000;
+  res.cookie(REFRESH_COOKIE_NAME, refreshToken, {
+    ...cookieBaseOptions(),
+    maxAge,
+  });
+}
+
+function clearRefreshCookie(res: Parameters<RequestHandler>[1]) {
+  res.clearCookie(REFRESH_COOKIE_NAME, cookieBaseOptions());
+}
+
+function readRefreshTokenFromRequest(req: Parameters<RequestHandler>[0]): string | undefined {
+  if (typeof req.cookies?.[REFRESH_COOKIE_NAME] === "string") {
+    return req.cookies[REFRESH_COOKIE_NAME];
+  }
+  if (typeof req.body?.refreshToken === "string") {
+    return req.body.refreshToken;
+  }
+  return undefined;
+}
 
 function validateEmail(email: string): boolean {
   return emailRegex.test(email);

@@ -1,10 +1,12 @@
 import { Router } from "express";
-import { notImplemented } from "./_notImplemented.js";
+import { authenticate } from "../middleware/auth";
+import { create, list } from "../controllers/transaction";
+import { notImplemented } from "./_notImplemented";
 
 export const transactionsRouter = Router();
 
-transactionsRouter.get("/", notImplemented("transactions.list"));
-transactionsRouter.post("/", notImplemented("transactions.create"));
+transactionsRouter.get("/", authenticate, list);
+transactionsRouter.post("/", authenticate, create);
 transactionsRouter.put("/:id", notImplemented("transactions.update"));
 transactionsRouter.delete("/:id", notImplemented("transactions.delete"));
 
