@@ -16,7 +16,7 @@ export const register: RequestHandler = async (req, res) => {
     if (!validateEmail(email)) return res.status(422).json({ message: "Invalid email format" });
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) return res.status(400).json({ message: "User already exists" });
+    if (existingUser) return res.status(400).json({ message: "Registration failed" });
 
     const hashedPassword = await bcrypt.hash(password, 12);
     await prisma.user.create({
@@ -40,7 +40,7 @@ export const login: RequestHandler = async (req, res) => {
     if (!validateEmail(email)) return res.status(422).json({ message: "Invalid email format" });
 
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return res.status(401).json({ message: "No user with email found" });
+    if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
