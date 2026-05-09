@@ -21,10 +21,12 @@
     "db:seed": "npm -w @app/api run db:seed"
   },
   "devDependencies": {
+    "@types/express": "^4.17.25",
     "prettier": "^3.6.2"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "express": "^4.22.1",
     "jsonwebtoken": "^9.0.3"
   }
 }
