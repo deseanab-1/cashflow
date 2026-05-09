@@ -5,19 +5,18 @@ interface TransactionParams {
   id: string;
 }
 
-
 const prisma = new PrismaClient();
 
 
 export const list: RequestHandler = async (req, res) => {
-  const email = (req as any)?.user?.email;
-  const user = await prisma.user.findUnique({ where: { email }});
+  const { accountId } = req.body;
+  const account = await prisma.account.findUnique({ where: { id: accountId }});
 
-  if (!user) {
-    return res.status(401).json({message: 'User not found'})
+  if (!account) {
+    return res.status(401).json({message: 'Auth failed'})
   }
 
-  const transactions = await prisma.transaction.findMany({where: { userId: user?.id }})
+  const transactions = await prisma.transaction.findMany({where: { accountId: account.id}})
   return res.status(200).json({ transactions })
 }
 
@@ -50,7 +49,7 @@ export const create: RequestHandler = async (req, res) => {
   }
 }
 
-export const update: RequestHandler<TransactionParams> = async (req, res) => {
+export const update: RequestHandler = async (req, res) => {
   const email = (req as any)?.user?.email;
   const user = await prisma.user.findUnique({ where: { email }});
 
@@ -59,7 +58,7 @@ export const update: RequestHandler<TransactionParams> = async (req, res) => {
   }
 
   try {
-    const { id } = req.params;
+    const { id } = req.params as any as TransactionParams;
     const { accountId, categoryId, amountCents, date, note } = req.body;
 
     await prisma.transaction.update({
@@ -82,7 +81,7 @@ export const update: RequestHandler<TransactionParams> = async (req, res) => {
 }
 
 
-export const deleteTransaction: RequestHandler<TransactionParams> = async (req, res) => {
+export const deleteTransaction: RequestHandler = async (req, res) => {
   const email = (req as any)?.user?.email;
   const user = await prisma.user.findUnique({ where: { email }});
 
@@ -90,7 +89,7 @@ export const deleteTransaction: RequestHandler<TransactionParams> = async (req, 
     return res.status(401).json({message: 'User not found'})
   }
 
-  const { id } = req.params;
+  const { id } = req.params as any as TransactionParams
 
   try {
     await prisma.transaction.delete({
