@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { notImplemented } from "./_notImplemented.js";
+import { authenticate } from "../middleware/auth";
+import { list, create, update, deleteBudget } from '../controllers/budget';
 
 export const budgetsRouter = Router();
 
-budgetsRouter.get("/", notImplemented("budgets.getForMonth"));
-budgetsRouter.put("/", notImplemented("budgets.upsertForMonth"));
-
+budgetsRouter.get("/", authenticate, list);
+budgetsRouter.post("/", authenticate, create);
+budgetsRouter.put("/:id", authenticate, update);
+budgetsRouter.delete("/:id", authenticate, deleteBudget);

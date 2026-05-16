@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { notImplemented } from "./_notImplemented.js";
+import { authenticate } from "../middleware/auth.js";
+import { list, create, update, deleteCategory } from "../controllers/categories.js";
 
 export const categoriesRouter = Router();
 
-categoriesRouter.get("/", notImplemented("categories.list"));
-categoriesRouter.post("/", notImplemented("categories.create"));
-categoriesRouter.put("/:id", notImplemented("categories.update"));
-categoriesRouter.delete("/:id", notImplemented("categories.delete"));
+categoriesRouter.get("/", authenticate, list);
+categoriesRouter.post("/", authenticate, create);
+categoriesRouter.put("/:id", authenticate, update);
+categoriesRouter.delete("/:id", authenticate, deleteCategory);
 

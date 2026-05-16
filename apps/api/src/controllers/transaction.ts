@@ -25,7 +25,7 @@ export const create: RequestHandler = async (req, res) => {
   const user = await prisma.user.findUnique({ where: { email }});
 
   if (!user) {
-    return res.status(401).json({message: 'User not found'})
+    return res.status(401).json({message: 'Auth failed'})
   }
 
   const { accountId, categoryId, amountCents, date, note } = req.body;
@@ -54,7 +54,7 @@ export const update: RequestHandler = async (req, res) => {
   const user = await prisma.user.findUnique({ where: { email }});
 
   if (!user) {
-    return res.status(401).json({message: 'User not found'})
+    return res.status(401).json({message: 'Auth failed'})
   }
 
   try {
@@ -80,16 +80,21 @@ export const update: RequestHandler = async (req, res) => {
   return res.status(200).json({ message: 'Transaction Updated'});
 }
 
-
 export const deleteTransaction: RequestHandler = async (req, res) => {
   const email = (req as any)?.user?.email;
   const user = await prisma.user.findUnique({ where: { email }});
 
   if (!user) {
-    return res.status(401).json({message: 'User not found'})
+    return res.status(401).json({message: 'Auth failed'})
   }
 
   const { id } = req.params as any as TransactionParams
+  const transaction = await prisma.transaction.findUnique({where: {id}});
+
+  if (!transaction) {
+    console.error(`Transaction ${id} could not be deleted. Does not exist`);
+    return res.status(400).json('Delete failed');
+  }
 
   try {
     await prisma.transaction.delete({
@@ -99,6 +104,6 @@ export const deleteTransaction: RequestHandler = async (req, res) => {
     return res.status(202).json({ message: 'Transaction deleted' })
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Transaction delete failed" });
+    return res.status(500).json({ error: "Delete failed" });
   }
 }

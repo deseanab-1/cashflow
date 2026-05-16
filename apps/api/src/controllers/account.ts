@@ -37,11 +37,13 @@ export const create: RequestHandler = async (req, res) => {
   const { name, type }: AccountReq = req.body;
 
   if (!name ) {
-    return res.status(400).json({message: 'Bad Request: Name'});
+    console.error('Missing name');
+    return res.status(400).json({message: ' Account not created'});
   }
 
   if (!type) {
-    return res.status(400).json({message: 'Bad Request: Type'});
+    console.error('Missing type');
+    return res.status(400).json({message: 'Account not created'});
   }
 
   const account = await prisma.account.create({
@@ -101,15 +103,18 @@ export const deleteAccount: RequestHandler = async (req, res): Promise<void> => 
   }
 
   try {
-    await prisma.transaction.deleteMany({where: { accountId: account.id}});
+    await prisma.transaction.deleteMany({where: { accountId: account.id }});
+    console.log(`Transactions with account id ${id} deleted`);
+
     await prisma.account.delete({
       where: {id}
     });
+    console.log(`Account ${id} deleted`);
+
   } catch (error) {
     console.error(error);
     res.status(500).json(error);
   }
-
 
   res.status(200).json('Account Deleted')
   return
