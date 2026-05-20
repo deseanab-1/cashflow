@@ -8,12 +8,12 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 
 export function AppShell() {
   return (
-    <div className="min-h-full bg-slate-950 text-slate-100">
-      <header className="border-b border-white/10">
+    <div className="min-h-full bg-gray-100 text-slate-100">
+      <header className="border-b bg-green-600 border-white/10">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
           <div className="font-semibold tracking-tight">Cash Flow</div>
           <nav className="flex items-center gap-1">
-            <NavLink to="/" end className={navLinkClass}>
+            <NavLink to="/dashboard" end className={navLinkClass}>
               Dashboard
             </NavLink>
             <NavLink to="/transactions" className={navLinkClass}>
@@ -24,6 +24,9 @@ export function AppShell() {
             </NavLink>
             <NavLink to="/settings" className={navLinkClass}>
               Settings
+            </NavLink>
+            <NavLink to="/logout" className={navLinkClass}>
+              Logout
             </NavLink>
           </nav>
         </div>

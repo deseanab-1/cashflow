@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import type { RequestHandler } from "express";
+import { TransactionParams } from "./transaction";
 
 const prisma = new PrismaClient();
 
@@ -11,6 +12,8 @@ interface AccountReq {
 interface AccountParams {
   id: string
 }
+
+// Account
 
 export const list: RequestHandler = async (req, res): Promise<void> => {
   const email = (req as any)?.user?.email;
@@ -118,4 +121,31 @@ export const deleteAccount: RequestHandler = async (req, res): Promise<void> => 
 
   res.status(200).json('Account Deleted')
   return
+}
+
+// Transactions
+
+export const getTransaction: RequestHandler = async (req, res) => {
+  const { id } = req.params as any as AccountParams;
+  const account = await prisma.account.findUnique({ where: { id }});
+
+  if (!account) {
+    return res.status(401).json({message: 'Auth failed'})
+  }
+
+  const { transactionId } = req.params as any;
+  console.log('Trans id ', transactionId)
+
+  if(!transactionId) {
+    console.error(`Transaction ${transactionId} not found`)
+    return res.status(404).json({message: 'Delete failed'})
+  }
+
+  const transactions = await prisma.transaction.findUnique({
+    where: {
+      id: transactionId,
+      accountId: account.id,
+    }});
+
+  return res.status(200).json({ transactions })
 }

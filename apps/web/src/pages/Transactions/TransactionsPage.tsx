@@ -1,12 +1,12 @@
 export function TransactionsPage() {
   return (
-    <div>
+    <div className="text-zinc-950">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight">
             Transactions
           </h1>
-          <p className="mt-3 max-w-2xl text-slate-300">
+          <p className="mt-3 max-w-2xl">
             Scaffold page. Add filters, table, and create/edit transaction forms.
           </p>
         </div>
@@ -16,13 +16,13 @@ export function TransactionsPage() {
       </div>
 
       <div className="mt-8 overflow-hidden rounded-xl border border-white/10">
-        <div className="grid grid-cols-4 gap-0 bg-white/5 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-300">
+        <div className="grid grid-cols-4 gap-0 bg-white/5 px-4 py-3 text-xs font-semibold uppercase tracking-wide">
           <div>Date</div>
           <div>Category</div>
           <div>Account</div>
           <div className="text-right">Amount</div>
         </div>
-        <div className="px-4 py-6 text-sm text-slate-300">
+        <div className="px-4 py-6 text-sm">
           No transactions yet.
         </div>
       </div>

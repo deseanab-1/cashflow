@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import type { RequestHandler } from "express";
 
-interface TransactionParams {
+export interface TransactionParams {
   id: string;
 }
 
@@ -9,14 +9,14 @@ const prisma = new PrismaClient();
 
 
 export const list: RequestHandler = async (req, res) => {
-  const { accountId } = req.body;
-  const account = await prisma.account.findUnique({ where: { id: accountId }});
+  const email = (req as any)?.user?.email;
+  const user = await prisma.user.findUnique({ where: { email }});
 
-  if (!account) {
+  if (!user) {
     return res.status(401).json({message: 'Auth failed'})
   }
 
-  const transactions = await prisma.transaction.findMany({where: { accountId: account.id}})
+  const transactions = await prisma.transaction.findMany({where: { userId: user.id}})
   return res.status(200).json({ transactions })
 }
 
@@ -29,6 +29,11 @@ export const create: RequestHandler = async (req, res) => {
   }
 
   const { accountId, categoryId, amountCents, date, note } = req.body;
+
+  const account = await prisma.account.findUnique({ where: { id: accountId }});
+  if (!account) {
+    return res.status(401).json({message: 'Auth failed'})
+  }
 
   try {
     const transaction = await prisma.transaction.create({
