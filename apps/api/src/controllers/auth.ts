@@ -12,6 +12,8 @@ const REFRESH_COOKIE_NAME = "refreshToken";
 export const register: RequestHandler = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('email: ', email)
+    console.log('passwd: ', password)
 
     if (!validateEmail(email)) return res.status(422).json({ message: "Invalid email format" });
 
@@ -25,6 +27,7 @@ export const register: RequestHandler = async (req, res) => {
         passwordHash: hashedPassword,
       },
     });
+    console.log('Registration succesful!')
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Registration failed" });

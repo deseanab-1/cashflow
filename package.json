@@ -25,6 +25,8 @@
     "prettier": "^3.6.2"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.17.0",
+    "auth0": "^5.10.0",
     "bcrypt": "^6.0.0",
     "express": "^4.22.1",
     "jsonwebtoken": "^9.0.3"

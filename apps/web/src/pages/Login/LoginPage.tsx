@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { FormProps } from 'antd';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Card, Checkbox, Flex, Form, Input } from 'antd';
+import { useAuth0 } from "@auth0/auth0-react";
 import './login.css'
 
 export function LoginPage() {
@@ -11,8 +12,11 @@ export function LoginPage() {
     remember?: string;
   };
 
+  const { loginWithRedirect } = useAuth0();
+
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     console.log('Success:', values);
+    loginWithRedirect();
   };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
@@ -20,22 +24,25 @@ export function LoginPage() {
   };
 
   return (
-    <div>
+    <Flex justify="center" align="center" style={{ minHeight: '50vh', background: '#f5f5f5' }}>
+
+    <Card
+      title="Create an Account"
+      style={{ width: '100%', maxWidth: 500, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+    >
       <Form
         className="loginForm"
         name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
+        layout="vertical"
         initialValues={{ remember: true }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item<FieldType>
-          label="Username"
+          label="Email"
           name="username"
-          rules={[{ required: true, message: 'Please input your username!' }]}
+          rules={[{ required: true, message: 'User name is required' }]}
         >
           <Input />
         </Form.Item>
@@ -48,17 +55,21 @@ export function LoginPage() {
           <Input.Password />
         </Form.Item>
 
-        <Form.Item<FieldType> name="remember" valuePropName="checked" label={null}>
+        <Form.Item<FieldType> name="remember" valuePropName="checked">
           <Checkbox>Remember me</Checkbox>
         </Form.Item>
 
-        <Form.Item label={null}>
-          <Button type="primary" htmlType="submit">
-            Submit
+        <Form.Item style={{ marginBottom: 0 }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            block>
+            Login
           </Button>
         </Form.Item>
       </Form>
-    </div>
+    </Card>
+  </Flex>
   )
 }
 
