@@ -10,10 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/charts": "^2.6.7",
     "antd": "^6.4.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react-router-dom": "^7.9.1"
+    "react-router-dom": "^7.9.1",
+    "recharts": "^3.8.1"
   },
   "devDependencies": {
     "@app/shared": "0.0.0",
