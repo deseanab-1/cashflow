@@ -1,9 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, useNavigate } from 'react-router-dom'
-import './index.css'
+import { App as AntdApp } from 'antd';
 import App from './App.tsx'
 import { Auth0Provider } from "@auth0/auth0-react";
+import './index.css'
+
 
 function Auth0ProviderWithRedirectCallback({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
@@ -30,7 +32,9 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <Auth0ProviderWithRedirectCallback>
-        <App />
+        <AntdApp>
+          <App />
+        </AntdApp>
       </Auth0ProviderWithRedirectCallback>
     </BrowserRouter>
   </StrictMode>,

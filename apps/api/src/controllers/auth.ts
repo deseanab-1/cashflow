@@ -12,8 +12,6 @@ const REFRESH_COOKIE_NAME = "refreshToken";
 export const register: RequestHandler = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log('email: ', email)
-    console.log('passwd: ', password)
 
     if (!validateEmail(email)) return res.status(422).json({ message: "Invalid email format" });
 
@@ -21,13 +19,32 @@ export const register: RequestHandler = async (req, res) => {
     if (existingUser) return res.status(400).json({ message: "Registration failed" });
 
     const hashedPassword = await bcrypt.hash(password, 12);
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         email,
         passwordHash: hashedPassword,
       },
     });
-    console.log('Registration succesful!')
+
+    if (!user) {
+      console.error('Create user failed')
+      throw new Error('Registration failed');
+    }
+
+    console.log('Registration succesful!');
+
+    await prisma.account.create({
+      data: {
+        name: "default",
+        type: "default",
+        userId: user?.id,
+        country: "United States",
+        currency: "US", //default for now will have them pick country/curreny on registration at some point
+      }
+    });
+
+    console.log('Account creation succesful');
+
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Registration failed" });

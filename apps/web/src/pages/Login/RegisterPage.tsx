@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { FormProps } from 'antd';
-import { Button, Checkbox, Form, Input, Flex, Card } from 'antd';
+import { Button, Checkbox, Form, Input, Flex, Card, App } from 'antd';
 import './register.css'
+import './auth.css'
+
 
 export function RegisterPage() {
   type FieldType = {
@@ -13,6 +15,7 @@ export function RegisterPage() {
   };
 
   const navigate = useNavigate();
+  const { notification } = App.useApp();
 
   const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
     console.log('Success:', values);
@@ -29,10 +32,24 @@ export function RegisterPage() {
 
       const data = await response.json();
       if (!response.ok) {
+        notification.error({
+          message: 'Registration Failed',
+          description: data.message || 'Something went wrong. Please try again later.',
+          placement: 'top',
+          duration: 5,
+        });
+
         throw new Error(data.message || "Registration failed");
       }
 
-      console.log('Registration succesful!', data);
+      notification.success({
+        message: 'Registration Succesful',
+        description: data.message,
+        placement: 'top',
+        duration: 5,
+      });
+
+      console.log('Registration Succesful!', data);
       navigate('/login')
 
     } catch (error) {
@@ -103,9 +120,22 @@ export function RegisterPage() {
           <Checkbox>Remember me</Checkbox>
         </Form.Item>
 
-        <Form.Item style={{ marginBottom: 0 }}>
-          <Button type="primary" htmlType="submit" block>
+        <Form.Item style={{ marginBottom: 3 }}>
+          <Button
+            className="authButton"
+            type="primary"
+            htmlType="submit"
+            block>
             Register
+          </Button>
+        </Form.Item>
+        <Form.Item style={{ marginBottom: 0 }}>
+          <Button
+            type="default"
+            htmlType="submit"
+            onClick={() => navigate('/login')}
+            block>
+            Login
           </Button>
         </Form.Item>
       </Form>

@@ -26,6 +26,8 @@ model Account {
   userId    String   @db.ObjectId
   name      String
   type      String
+  currency  String
+  country   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -74,7 +76,9 @@ model Budget {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   userId     String   @db.ObjectId
   categoryId String   @db.ObjectId
+  name       String
   month      String
+  frequency  String
   limitCents Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt

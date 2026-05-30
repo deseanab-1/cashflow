@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import type { FormProps } from 'antd';
-import { Button, Card, Checkbox, Flex, Form, Input } from 'antd';
+import { App, Button, Card, Checkbox, Flex, Form, Input } from 'antd';
 import { useAuth0 } from "@auth0/auth0-react";
-import './login.css'
+import './auth.css'
 
 export function LoginPage() {
   type FieldType = {
@@ -14,6 +14,9 @@ export function LoginPage() {
 
   const { loginWithRedirect } = useAuth0();
 
+  const navigate = useNavigate();
+  const { notification } = App.useApp();
+
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     console.log('Success:', values);
     loginWithRedirect();
@@ -21,6 +24,12 @@ export function LoginPage() {
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
     console.log('Failed:', errorInfo);
+    notification.error({
+      message: 'Login Failed',
+      description: errorInfo.message,
+      placement: 'top',
+      duration: 5,
+    });
   };
 
   return (
@@ -59,12 +68,22 @@ export function LoginPage() {
           <Checkbox>Remember me</Checkbox>
         </Form.Item>
 
-        <Form.Item style={{ marginBottom: 0 }}>
+        <Form.Item style={{ marginBottom: 3 }}>
           <Button
+            className="authButton"
             type="primary"
             htmlType="submit"
             block>
             Login
+          </Button>
+        </Form.Item>
+        <Form.Item style={{ marginBottom: 0 }}>
+          <Button
+            type="default"
+            htmlType="submit"
+            onClick={() => navigate('/register')}
+            block>
+            Register
           </Button>
         </Form.Item>
       </Form>

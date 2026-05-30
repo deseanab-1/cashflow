@@ -1,0 +1,15 @@
+.authButton,
+.authButton.ant-btn-primary {
+  background-color: #19a249;
+  border-color: #19a249;
+  color: #ffffff!important;
+}
+
+.authButton:hover,
+.authButton:focus,
+.authButton:active,
+.authButton.ant-btn-primary:hover {
+  background-color: #19a249 !important;
+  border-color: #19a249 !important;
+  color: #ffffff !important;
+}
